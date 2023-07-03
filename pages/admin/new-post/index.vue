@@ -8,25 +8,26 @@
 </template>
 
 <script>
-import axios from "axios";
 import AdminPostForm from "~/components/Admin/AdminPostForm";
+import { usePostsStore } from "../../../store/posts";
 
 export default {
   layout: "admin",
-
   components: {
     AdminPostForm,
   },
 
+  // access to Pinia Store
+  setup() {
+    const postsStore = usePostsStore();
+
+    return { postsStore };
+  },
+
   methods: {
     onSubmit(postData) {
-      axios
-        .post(
-          "https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts.json",
-          { ...postData, updatedDate: new Date() }
-        )
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
+      this.postsStore.addPost(postData);
+      this.$router.push("/admin");
     },
   },
 };

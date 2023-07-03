@@ -9,7 +9,7 @@
 
 <script>
 import AdminPostForm from "~/components/Admin/AdminPostForm";
-import axios from "axios";
+import { usePostsStore } from "../../../store/posts";
 
 export default {
   components: { AdminPostForm },
@@ -22,6 +22,7 @@ export default {
 
   //built in fetch hook. Must be used inside of setup(). Default method is 'GET'
   async setup() {
+    const postsStore = usePostsStore();
     const route = useRoute();
     const postId = route.params.postId; // /admin/[postId]
 
@@ -31,18 +32,20 @@ export default {
 
     return {
       loadedPost: post?._rawValue || null,
+      postsStore,
+      refresh,
     };
   },
 
   methods: {
     onSubmit(editedPost) {
-      axios
-        .put(
-          `https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts/${this.$route.params.postId}.json`,
-          { ...editedPost, updatedDate: new Date() }
-        )
-        .then((res) => this.$router.push("/admin"))
-        .catch((err) => console.log(err));
+      this.postsStore.editPost({
+        ...editedPost,
+        id: this.$route.params.postId,
+      });
+
+      // this.refresh();
+      this.$router.push("/admin");
     },
   },
 };
