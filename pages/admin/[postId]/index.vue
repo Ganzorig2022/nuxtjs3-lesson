@@ -1,30 +1,51 @@
-<!-- http://localhost:3000/admin/c1 -->
+<!-- ENDPOINT ===> http://localhost:3000/admin/[postId] -->
 <template>
   <div class="admin-post-page">
     <section class="update-form">
-      <AdminPostForm :post="loadedPost" />
+      <AdminPostForm :post="loadedPost" @submit="onSubmit" />
     </section>
   </div>
 </template>
 
 <script>
-import AdminPostForm from '~/components/Admin/AdminPostForm.vue'
+import AdminPostForm from "~/components/Admin/AdminPostForm";
+import axios from "axios";
 
 export default {
   components: { AdminPostForm },
 
   data() {
     return {
-      loadedPost: {
-        author: 'Ganzorig',
-        title: 'My Post #1',
-        content: ' Super good post.',
-        thumbnailLink:
-          'https://plus.unsplash.com/premium_photo-1678566111481-8e275550b700?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80',
-      },
-    }
+      loadedPost: null,
+    };
   },
-}
+
+  //built in fetch hook. Must be used inside of setup(). Default method is 'GET'
+  async setup() {
+    const route = useRoute();
+    const postId = route.params.postId; // /admin/[postId]
+
+    const { data: post, refresh } = await useFetch(
+      `https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts/${postId}.json`
+    );
+
+    return {
+      loadedPost: post?._rawValue || null,
+    };
+  },
+
+  methods: {
+    onSubmit(editedPost) {
+      axios
+        .put(
+          `https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts/${this.$route.params.postId}.json`,
+          { ...editedPost, updatedDate: new Date() }
+        )
+        .then((res) => this.$router.push("/admin"))
+        .catch((err) => console.log(err));
+    },
+  },
+};
 </script>
 
 <style scoped>

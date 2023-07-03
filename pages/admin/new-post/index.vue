@@ -20,15 +20,13 @@ export default {
 
   methods: {
     onSubmit(postData) {
-      console.log("postData", postData);
-
-      // axios
-      //   .post(
-      //     "https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts.json",
-      //     postData
-      //   )
-      //   .then((result) => console.log(result))
-      //   .catch(err);
+      axios
+        .post(
+          "https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts.json",
+          { ...postData, updatedDate: new Date() }
+        )
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
     },
   },
 };

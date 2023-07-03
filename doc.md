@@ -37,3 +37,25 @@ export default {
 // Child component
 <TheSideNavToggle @toggle="$emit('sidenavToggle')" />
 ```
+
+### USEFETCH HOOK
+
+`1.` Built in fetch hook. Must be used inside of setup(). Default method is 'GET'
+
+
+> https://nuxt.com/docs/api/composables/use-fetch#usefetch
+
+```js
+async setup() {
+    const route = useRoute();
+    const postId = route.params.postId; // /admin/[postId]
+
+    const { data: post, refresh } = await useFetch(
+      `https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts/${postId}.json`
+    );
+
+    return {
+      loadedPost: post?._rawValue || null,
+    };
+},
+```

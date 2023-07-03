@@ -1,14 +1,28 @@
 <template>
   <div class="posts-page">
-    <PostList />
+    <PostList :posts="loadedPosts" />
   </div>
 </template>
 
 <script>
 import PostList from "@/components/Posts/PostList";
+import { usePostsStore } from "../../store/posts";
 
 export default {
   components: { PostList },
+
+  // get data from Pinia Store
+  setup() {
+    const postsStore = usePostsStore();
+
+    return { postsStore };
+  },
+
+  computed: {
+    loadedPosts() {
+      return this.postsStore.loadedPosts;
+    },
+  },
 };
 </script>
 

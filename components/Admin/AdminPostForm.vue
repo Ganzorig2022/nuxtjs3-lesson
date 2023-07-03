@@ -1,12 +1,15 @@
-<!-- PARENT ===> /pages/admin/new-post/index.vue -->
+<!-- PARENT #1 ===> /pages/admin/new-post/index.vue -->
+<!-- PARENT #2 ===> /pages/admin/[postId]/index.vue -->
 <template>
   <form @submit.prevent="onSave">
-    <AppControlInput v-model="editedPost.author">Author Name</AppControlInput>
-    <AppControlInput v-model="editedPost.title">Title</AppControlInput>
-    <AppControlInput v-model="editedPost.thumbnailLink"
+    <AppControlInput v-model:value="editedPost.author"
+      >Author Name</AppControlInput
+    >
+    <AppControlInput v-model:value="editedPost.title">Title</AppControlInput>
+    <AppControlInput v-model:value="editedPost.thumbnail"
       >Thumbnail Link
     </AppControlInput>
-    <AppControlInput control-type="textarea" v-model="editedPost.content"
+    <AppControlInput control-type="textarea" v-model:value="editedPost.content"
       >Content
     </AppControlInput>
     <AppButton type="submit">Save</AppButton>
@@ -22,8 +25,8 @@
 
 
 <script>
-import AppControlInput from "~/components/UI/AppControlInput";
-import AppButton from "~/components/UI/AppButton";
+import AppControlInput from "~/components/UI/AppControlInput.vue";
+import AppButton from "~/components/UI/AppButton.vue";
 
 export default {
   props: {
@@ -32,6 +35,8 @@ export default {
       required: false,
     },
   },
+
+  emits: ["submit"],
 
   components: {
     AppControlInput,
@@ -45,7 +50,7 @@ export default {
         : {
             author: "",
             title: "",
-            thumbnailLink: "",
+            thumbnail: "",
             content: "",
           },
     };
@@ -53,8 +58,7 @@ export default {
 
   methods: {
     onSave() {
-      console.log("first", this.editedPost);
-      this.$emit("submitData", this.editedPost);
+      this.$emit("submit", this.editedPost);
     },
 
     onCancel() {

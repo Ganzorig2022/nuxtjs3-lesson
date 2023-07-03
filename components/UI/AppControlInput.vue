@@ -1,33 +1,37 @@
 <template>
   <div class="input-control">
     <label><slot /></label>
-    <input
-      v-if="controlType === 'input'"
-      v-bind="$attrs"
-      :value="value"
-      @input="$emit('input', $event.target.value)">
+    <input v-if="controlType === 'input'" :value="value" @input="onInput" />
     <textarea
       v-if="controlType === 'textarea'"
       rows="10"
       :value="value"
-      @input="$emit('input', $event.target.value)"></textarea>
+      @input="onInput"
+    ></textarea>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AppInputControl',
+  name: "AppInputControl",
+  emits: ["update:value"],
   props: {
     controlType: {
       type: String,
-      default: 'input'
+      default: "input",
     },
     value: {
       type: String,
-      default: ''
-    }
-  }
-}
+      default: "",
+    },
+  },
+
+  methods: {
+    onInput(event) {
+      this.$emit("update:value", event.target.value);
+    },
+  },
+};
 </script>
 
 <style scoped>

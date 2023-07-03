@@ -1,19 +1,24 @@
 <template>
-  <button class="button" :class="btnStyle" v-bind="$attrs" v-on="$listeners">
+  <button
+    class="button"
+    :class="btnStyle"
+    v-bind="$attrs"
+    @click="$emit('click')"
+  >
     <slot />
   </button>
 </template>
 
 <script>
 export default {
-  name: 'AppButton',
+  name: "AppButton",
   props: {
     btnStyle: {
       type: String,
-      default: '',
+      default: "",
     },
   },
-}
+};
 </script>
 
 

@@ -1,12 +1,12 @@
 <template>
   <div class="single-post-page">
     <section class="post">
-      <h1 class="post-title">Title of the Post</h1>
+      <h1 class="post-title">{{ loadedPost?.title }}</h1>
       <div class="post-details">
-        <div class="post-detail">Last updated on</div>
-        <div class="post-detail">Written by name</div>
+        <div class="post-detail">{{ loadedPost?.updatedDate }}</div>
+        <div class="post-detail">{{ loadedPost?.author }}</div>
       </div>
-      <p class="post-content">Content of the post</p>
+      <p class="post-content">{{ loadPayload?.content }}</p>
     </section>
     <section class="post-feedback">
       <p>
@@ -21,20 +21,29 @@
 
 <script>
 export default {
-  asyncData(context, callback) {
-    setTimeout(() => {
-      callback(null, {
-        loadedPost: {
-          id: '1',
-          title: 'First Post',
-          previewText: 'This is our first post!',
-          thumbnail:
-            'https://static.pexels.com/photos/270348/pexels-photo-270348.jpeg',
-        },
-      })
-    }, 1000)
+  data() {
+    return {
+      loadedPost: null,
+    };
   },
-}
+
+  async setup() {
+    const route = useRoute();
+
+    const postId = route.params.id;
+    const { data: post, refresh } = await useFetch(
+      `https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts/${postId}.json`
+    );
+
+    return {
+      loadedPost: post?._rawValue || null,
+    };
+  },
+
+  methods: {},
+
+  mounted() {},
+};
 </script>
 
 <style scoped>

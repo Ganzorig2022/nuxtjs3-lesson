@@ -9,7 +9,7 @@
 
 <script>
 import PostList from "@/components/posts/PostList";
-import { usePostsStore } from "@/store/posts";
+import { usePostsStore } from "../store/posts";
 
 export default {
   components: { PostList },
@@ -18,33 +18,18 @@ export default {
   setup() {
     const postsStore = usePostsStore();
 
+    postsStore.fetch();
+
     return { postsStore };
   },
 
   data() {
-    return {
-      loadedPosts: [
-        {
-          id: "1",
-          title: "First Post",
-          previewText: "This is our first post!",
-          thumbnail:
-            "https://static.pexels.com/photos/270348/pexels-photo-270348.jpeg",
-        },
-        {
-          id: "2",
-          title: "Second Post",
-          previewText: "This is our second post!",
-          thumbnail:
-            "https://static.pexels.com/photos/270348/pexels-photo-270348.jpeg",
-        },
-      ],
-    };
+    return {};
   },
 
   methods: {
     getPosts() {
-      return this.postsStore.setPosts(this.loadedPosts);
+      return this.postsStore.loadedPosts;
     },
   },
   // mounted() hook tuhain component anh render hiigdehed ajillana.

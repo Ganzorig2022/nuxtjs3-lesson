@@ -8,19 +8,34 @@
     </section>
     <section class="existing-posts">
       <h1>Existing posts</h1>
-      <PostList isAdmin />
+      <PostList isAdmin :posts="getPosts" />
     </section>
   </div>
 </template>
 
 <script>
-import PostList from '~/components/Posts/PostList.vue'
-import AppButton from '~/components/UI/AppButton.vue'
+import PostList from "@/components/posts/PostList";
+import AppButton from "~/components/UI/AppButton.vue";
+import { usePostsStore } from "../../store/posts";
 
 export default {
-  layout: 'admin',
+  layout: "admin",
   components: { PostList, AppButton },
-}
+
+  // get data from Pinia Store
+  setup() {
+    const postsStore = usePostsStore();
+    postsStore.fetch();
+
+    return { postsStore };
+  },
+
+  computed: {
+    getPosts() {
+      return this.postsStore.loadedPosts;
+    },
+  },
+};
 </script>
 
 <style scoped>

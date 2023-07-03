@@ -14,10 +14,11 @@
 </template>
 
 <script>
-import PostPreview from '@/components/Posts/PostPreview.vue'
+import PostPreview from "@/components/Posts/PostPreview";
 
 export default {
   components: { PostPreview },
+
   props: {
     isAdmin: {
       type: Boolean,
@@ -28,7 +29,7 @@ export default {
       required: true,
     },
   },
-}
+};
 </script>
 
 <style scoped>
