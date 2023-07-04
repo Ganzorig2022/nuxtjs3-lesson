@@ -14,10 +14,11 @@ import { usePostsStore } from "../store/posts";
 export default {
   components: { PostList },
 
-  // get data from Pinia Store
+  // access to Pinia Store
   setup() {
     const postsStore = usePostsStore();
 
+    // Fetch all posts data from firestore
     postsStore.fetch();
 
     return { postsStore };
@@ -31,10 +32,6 @@ export default {
     getPosts() {
       return this.postsStore.loadedPosts;
     },
-  },
-  // mounted() hook tuhain component anh render hiigdehed ajillana.
-  mounted() {
-    // this.getPosts();
   },
 };
 </script>

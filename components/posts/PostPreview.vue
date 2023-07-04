@@ -8,7 +8,7 @@
       ></div>
       <div class="post-content">
         <h1>{{ title }}</h1>
-        <p>{{ previewText }}</p>
+        <p>{{ content }}</p>
       </div>
     </article>
   </nuxt-link>
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: 'PostPreview',
+  name: "PostPreview",
   props: {
     id: {
       type: String,
@@ -26,7 +26,7 @@ export default {
       type: String,
       required: true,
     },
-    previewText: {
+    content: {
       type: String,
       required: true,
     },
@@ -43,10 +43,10 @@ export default {
   computed: {
     postLink() {
       // isAdmin =true bol '/admin/c1', '/posts/c1'
-      return this.isAdmin ? '/admin/' + this.id : '/posts/' + this.id
+      return this.isAdmin ? "/admin/" + this.id : "/posts/" + this.id;
     },
   },
-}
+};
 </script>
 
 <style scoped>

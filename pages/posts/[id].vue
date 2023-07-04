@@ -3,7 +3,9 @@
     <section class="post">
       <h1 class="post-title">{{ loadedPost?.title }}</h1>
       <div class="post-details">
-        <div class="post-detail">{{ loadedPost?.updatedDate }}</div>
+        <div class="post-detail">
+          Last Updated on: {{ dateFilter(loadedPost?.updatedDate) }}
+        </div>
         <div class="post-detail">{{ loadedPost?.author }}</div>
       </div>
       <p class="post-content">{{ loadPayload?.content }}</p>
@@ -29,14 +31,17 @@ export default {
 
   async setup() {
     const route = useRoute();
+    const { dateFilter } = useNuxtApp();
+    const config = useRuntimeConfig();
 
     const postId = route.params.id;
     const { data: post, refresh } = await useFetch(
-      `https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/posts/${postId}.json`
+      `${config.public.firebase_url}/posts/${postId}.json`
     );
 
     return {
       loadedPost: post?._rawValue || null,
+      dateFilter,
     };
   },
 
@@ -45,6 +50,7 @@ export default {
   mounted() {},
 };
 </script>
+
 
 <style scoped>
 .single-post-page {

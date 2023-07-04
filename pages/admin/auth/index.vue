@@ -2,16 +2,20 @@
 <template>
   <div class="admin-auth-page">
     <div class="auth-container">
-      <form>
-        <AppControlInput type="email">E-Mail Address</AppControlInput>
-        <AppControlInput type="password">Password</AppControlInput>
-        <AppButton type="submit">{{ isLogin ? 'Login' : 'Sign Up' }}</AppButton>
+      <form @submit.prevent="onSubmit">
+        <AppControlInput type="email" v-model:value="email"
+          >E-Mail Address</AppControlInput
+        >
+        <AppControlInput type="password" v-model:value="password"
+          >Password</AppControlInput
+        >
+        <AppButton type="submit">{{ isLogin ? "Login" : "Sign Up" }}</AppButton>
         <AppButton
           type="button"
           btn-style="inverted"
           style="margin-left: 10px"
           @click="isLogin = !isLogin"
-          >Switch to {{ isLogin ? 'Signup' : 'Login' }}</AppButton
+          >Switch to {{ isLogin ? "Signup" : "Login" }}</AppButton
         >
       </form>
     </div>
@@ -19,12 +23,13 @@
 </template>
   
   <script>
-import AppControlInput from '~/components/UI/AppControlInput.vue'
-import AppButton from '~/components/UI/AppButton.vue'
+import AppControlInput from "~/components/UI/AppControlInput.vue";
+import AppButton from "~/components/UI/AppButton.vue";
+import { usePostsStore } from "../../../store/posts";
 
 export default {
-  name: 'AdminAuthPage',
-  layout: 'admin',
+  name: "AdminAuthPage",
+  layout: "admin",
   components: {
     AppControlInput,
     AppButton,
@@ -32,9 +37,33 @@ export default {
   data() {
     return {
       isLogin: true,
-    }
+      email: "",
+      password: "",
+      secureToken: "",
+    };
   },
-}
+
+  // access to Pinia Store
+  setup() {
+    const postsStore = usePostsStore();
+
+    return { postsStore };
+  },
+
+  methods: {
+    async onSubmit() {
+      const res = await this.postsStore.authenticateUser({
+        isLogin: this.isLogin,
+        email: this.email,
+        password: this.password,
+      });
+
+      if (res === "success") {
+        this.$router.push("/admin");
+      }
+    },
+  },
+};
 </script>
   
   <style scoped>

@@ -1,10 +1,5 @@
 <template>
-  <button
-    class="button"
-    :class="btnStyle"
-    v-bind="$attrs"
-    @click="$emit('click')"
-  >
+  <button class="button" :class="btnStyle" v-bind="$attrs">
     <slot />
   </button>
 </template>
