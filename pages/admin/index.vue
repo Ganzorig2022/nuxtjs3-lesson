@@ -5,6 +5,7 @@
       <AppButton @click="$router.push('/admin/new-post')"
         >Create Post</AppButton
       >
+      <AppButton @click="onLogOut" style="margin-left: 10px">Logout</AppButton>
     </section>
     <section class="existing-posts">
       <h1>Existing posts</h1>
@@ -33,6 +34,13 @@ export default {
   computed: {
     getPosts() {
       return this.postsStore.loadedPosts;
+    },
+  },
+
+  methods: {
+    onLogOut() {
+      this.postsStore.logout();
+      this.$router.push("/admin/auth");
     },
   },
 };

@@ -23,7 +23,6 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' } // animation
   },
 
-  plugins:['~/plugins/dateFilter.js'] // helper function
-
+  plugins:['~/plugins/dateFilter.js'], // helper function
   
 })

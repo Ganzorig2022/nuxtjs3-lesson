@@ -5,7 +5,7 @@ import axios from 'axios'
 export const usePostsStore = defineStore('postsStore', {
     state: () => ({
         posts: [],
-        token: ''
+        token: null,
     }),
 
 
@@ -13,6 +13,11 @@ export const usePostsStore = defineStore('postsStore', {
     getters: {
         loadedPosts(state) {
             return state.posts
+        },
+
+        isAuthenticated(state) {
+            // if token is not null, then TRUE
+            return state.token != null
         }
     },
 
@@ -57,13 +62,15 @@ export const usePostsStore = defineStore('postsStore', {
         editPost(editedPost) {
             const config = useRuntimeConfig()
 
-            console.log("URL", config.public.firebase_url)
+            // authenticate using idToken
             axios
                 .put(
-                    `${config.public.firebase_url}/posts/${editedPost.id}.json`,
+                    `${config.public.firebase_url}/posts/${editedPost.id}.json?auth=${this.token}`,
                     { ...editedPost, updatedDate: new Date() }
                 )
                 .then((res) => {
+
+                    console.log("res", res)
                     const postIndex = this.posts.findIndex(post => post.id === editedPost.id)
                     this.posts[postIndex] = editedPost // update current store's post by its id
                 })
@@ -71,49 +78,76 @@ export const usePostsStore = defineStore('postsStore', {
 
         },
 
+        // SIGN UP, LOGIN
         async authenticateUser(userData) {
             const config = useRuntimeConfig();
             const key = config.public.firebase_api_key;
             const { isLogin, email, password } = userData
 
-            // is LOGIN
-            if (isLogin) {
-                try {
-                    const res = await axios.post(
-                        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${key}`,
-                        {
-                            email,
-                            password,
-                            returnSecureToken: true,
-                        }
-                    );
+            let authURL =
+                `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${key}`
 
-                    console.log("res", res);
-                } catch (error) {
-                    console.log("error", error);
-                }
+            // is SIGN UP
+            if (!isLogin) {
+                authURL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`
             }
-            // is SIGNUP
-            else {
-                try {
-                    const res = await axios.post(
-                        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`,
-                        {
-                            email,
-                            password,
-                            returnSecureToken: true,
-                        }
-                    );
 
-                    // console.log("RES", res)
-                    // TOKEN save
-                    this.token = res.data.idToken;
+            try {
+                const res = await axios.post(
+                    authURL,
+                    {
+                        email,
+                        password,
+                        token: this.token,
+                        returnSecureToken: true,
+                    }
+                );
 
-                    if (res.status === 200) return 'success'
+                // TOKEN save
+                this.token = res.data.idToken;
+                localStorage.setItem('token', this.token)
+                localStorage.setItem('tokenExpiration', new Date().getTime() + res.data.expiresIn * 1000) // 1688712135748 milliseconds
 
-                } catch (error) {
-                    console.log("error", error);
-                }
+                //Logout when token expires
+                this.setLogoutTimer(res.data.expiresIn * 1000)
+
+                if (res.status === 200) return 'success'
+            } catch (error) {
+                console.log("error", error);
+                return 'failed'
+            }
+        },
+
+        setLogoutTimer(duration) {
+            setTimeout(() => {
+                this.clearToken()
+            }, duration) // 3600*1000 = 3600000msec = 1 hour
+        },
+
+        clearToken() {
+            this.token = null
+        },
+
+        initAuth() {
+            const token = localStorage.getItem('token')
+            const expirationDate = localStorage.getItem('tokenExpiration')
+
+            if (new Date().getTime() > +expirationDate || !token) {
+                console.log('Invalid token or no token')
+                this.clearToken()
+                return
+            }
+
+            this.setLogoutTimer(+expirationDate - new Date().getTime())
+            this.token = token
+        },
+
+        logout() {
+            this.clearToken();
+
+            if (process.client) {
+                localStorage.removeItem('token')
+                localStorage.removeItem('tokenExpiration')
             }
         }
     }

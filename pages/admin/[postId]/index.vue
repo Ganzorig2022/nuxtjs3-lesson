@@ -22,6 +22,11 @@ export default {
 
   //built in fetch hook. Must be used inside of setup(). Default method is 'GET'
   async setup() {
+    definePageMeta({
+      middleware: ["persist", "auth"],
+      // or middleware: 'auth'
+    });
+
     const postsStore = usePostsStore();
     const route = useRoute();
     const postId = route.params.postId; // /admin/[postId]

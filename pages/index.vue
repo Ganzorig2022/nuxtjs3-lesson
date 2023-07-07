@@ -7,12 +7,13 @@
   </div>
 </template>
 
-<script>
+<script >
 import PostList from "@/components/posts/PostList";
 import { usePostsStore } from "../store/posts";
 
 export default {
   components: { PostList },
+  middleware: ["auth"],
 
   // access to Pinia Store
   setup() {

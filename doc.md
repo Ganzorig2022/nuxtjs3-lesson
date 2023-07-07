@@ -59,3 +59,29 @@ async setup() {
     };
 },
 ```
+
+### MIDDLEWARE
+
+`1.` middleware: ['persist', 'auth'] gewel ni ehleed "persist" middleware ni ajillaad daraa ni "auth"
+
+>https://nuxt.com/docs/guide/directory-structure/middleware
+
+```js
+<script>
+import { usePostsStore } from "../../../store/posts";
+
+export default {
+
+  // access to Pinia Store
+  setup() {
+    const postsStore = usePostsStore();
+
+    definePageMeta({
+      middleware: ["persist", "auth"], 
+    });
+
+    return { postsStore };
+  },
+};
+</script>
+```

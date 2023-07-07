@@ -21,6 +21,13 @@ export default {
   setup() {
     const postsStore = usePostsStore();
 
+    // console.log(postsStore.isAuthenticated);
+
+    definePageMeta({
+      middleware: ["persist", "auth"],
+      // or middleware: 'auth'
+    });
+
     return { postsStore };
   },
 
