@@ -9,7 +9,7 @@ export const usePostsStore = defineStore('postsStore', {
     }),
 
 
-    // COMPUTED PROPERTIES
+    // think as COMPUTED PROPERTIES
     getters: {
         loadedPosts(state) {
             return state.posts
@@ -21,7 +21,7 @@ export const usePostsStore = defineStore('postsStore', {
         }
     },
 
-    // METHODS PROPERTIES
+    // think as METHODS PROPERTIES
     actions: {
         setPosts(posts) {
             return this.posts = posts

@@ -18,9 +18,10 @@
 import PostList from "@/components/posts/PostList";
 import AppButton from "~/components/UI/AppButton.vue";
 import { usePostsStore } from "../../store/posts";
+definePageMeta({ layout: "admin" });
 
 export default {
-  layout: "admin",
+  // layout: "admin", // deprecated, only on nuxt.js 2
   components: { PostList, AppButton },
 
   // get data from Pinia Store
